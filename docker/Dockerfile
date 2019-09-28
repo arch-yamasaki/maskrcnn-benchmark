@@ -1,4 +1,4 @@
-ARG CUDA="9.0"
+ARG CUDA="10.0"
 ARG CUDNN="7"
 
 FROM nvidia/cuda:${CUDA}-cudnn${CUDNN}-devel-ubuntu16.04
@@ -37,9 +37,7 @@ RUN conda install pytorch-nightly cudatoolkit=${CUDA} -c pytorch \
  && conda clean -ya
 
 # Install TorchVision master
-RUN git clone https://github.com/pytorch/vision.git \
- && cd vision \
- && python setup.py install
+RUN pip install -U torchvision==0.4.0
 
 # install pycocotools
 RUN git clone https://github.com/cocodataset/cocoapi.git \
@@ -54,7 +52,7 @@ RUN git clone https://github.com/NVIDIA/apex.git \
 # install PyTorch Detection
 ARG FORCE_CUDA="1"
 ENV FORCE_CUDA=${FORCE_CUDA}
-RUN git clone https://github.com/facebookresearch/maskrcnn-benchmark.git \
+RUN git clone https://github.com/arch-yamasaki/maskrcnn-benchmark.git \
  && cd maskrcnn-benchmark \
  && python setup.py build develop
 

@@ -1,9 +1,94 @@
 # Faster R-CNN and Mask R-CNN in PyTorch 1.0
 
+
+## This is the Repository for Kuzushiji Detection.
+
+Below is the engine for builging nvidia-docker
+```sh
+gcloud compute instances create kuzushizi  \
+    --machine-type n1-standard-4 --zone 'us-central1-a' \
+    --accelerator 'type=nvidia-tesla-k80,count=1' \
+    --image-family 'pytorch-latest-gpu' \
+    --image-project deeplearning-platform-release \
+    --boot-disk-size=120GB \
+    --metadata='install-nvidia-driver=True' \
+    --maintenance-policy TERMINATE
+
+```
+
+```sh
+gcloud beta compute instances create kuzushizi  \
+    --machine-type n1-standard-4 --zone 'asia-northeast1-a' \
+    --accelerator 'type=nvidia-tesla-t4,count=1' \
+    --image-family 'pytorch-latest-gpu' \
+    --image-project deeplearning-platform-release \
+    --boot-disk-size=120GB \
+    --metadata='install-nvidia-driver=True' \
+    --container_image 'asia.gcr.io/kuzushiji-254306/maskrcnn-benchmark-gpu',
+    --maintenance-policy TERMINATE
+```
+
+
+## About Datasets
+Iy you want to train your own datasets, you should make `./datasets` directory and prepare datasets.
+If you want to change dataset_catalog, you could refer to `~/mascrcnn-benchmark/configs/dataset_catalog.py` and add dataset_catalogs.
+
+An examples is below.
+
+```py
+{
+    "my_train": {
+        "data_dir": "voc/my_datas",
+        "split": "train"
+    },
+    "voc_2007_train_cocostyle": {
+        "img_dir": "voc/VOC2007/JPEGImages",
+        "ann_file": "voc/VOC2007/Annotations/pascal_train2007.json"
+    },
+    "my_val": {
+        "data_dir": "voc/my_datas",
+        "split": "val"
+    },
+    "voc_2007_val_cocostyle": {
+        "img_dir": "voc/VOC2007/JPEGImages",
+        "ann_file": "voc/VOC2007/Annotations/pascal_val2007.json"
+    },
+    "my_test": {
+        "data_dir": "voc/my_datas",
+        "split": "test"
+    },
+    "voc_2007_test_cocostyle": {
+        "img_dir": "voc/VOC2007/JPEGImages",
+        "ann_file": "voc/VOC2007/Annotations/pascal_test2007.json"
+    }
+}
+
+```
+
+Also if your datasets is different classes,
+you should change lists `./maskrcnn_benchmark/datas/datasets/voc.py`
+
+```py
+
+```
+
+> When you want to change voc.py, open '__init__.py' and change below code and make voc_{name}.py.
+> ```py
+> # from .voc import PascalVOCDataset
+> from .voc_{name} import PascalVOCDataset
+> ```
+
+
+
+
+
+## Faster R-CNN and Mask R-CNN in PyTorch 1.0
+
 This project aims at providing the necessary building blocks for easily
 creating detection and segmentation models using PyTorch 1.0.
 
 ![alt text](demo/demo_e2e_mask_rcnn_X_101_32x8d_FPN_1x.png "from http://cocodataset.org/#explore?id=345434")
+
 
 ## Highlights
 - **PyTorch 1.0:** RPN, Faster R-CNN and Mask R-CNN implementations that matches or exceeds Detectron accuracies
